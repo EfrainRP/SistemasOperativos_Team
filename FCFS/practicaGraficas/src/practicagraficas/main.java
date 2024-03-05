@@ -218,13 +218,13 @@ public class main extends javax.swing.JFrame {
         label_id1.setText("ID:");
 
         tiempo_cpu.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        tiempo_cpu.setText("32");
+        tiempo_cpu.setText("0");
 
         id_cpu.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        id_cpu.setText("32");
+        id_cpu.setText("0");
 
         ocupado_cpu.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        ocupado_cpu.setText("32");
+        ocupado_cpu.setText("0");
 
         javax.swing.GroupLayout panel_cpuLayout = new javax.swing.GroupLayout(panel_cpu);
         panel_cpu.setLayout(panel_cpuLayout);
@@ -523,7 +523,7 @@ public class main extends javax.swing.JFrame {
                         .addGap(90, 90, 90)
                         .addComponent(iniciar, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(24, 24, 24)
+                        .addGap(36, 36, 36)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(panel_cpu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
@@ -550,7 +550,7 @@ public class main extends javax.swing.JFrame {
                         .addGap(13, 13, 13))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(label_ejecutando)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 102, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 107, Short.MAX_VALUE)
                         .addComponent(bloquear)
                         .addGap(18, 18, 18)
                         .addComponent(terminar)
@@ -570,7 +570,7 @@ public class main extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(label_bloqueados3, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 246, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(23, Short.MAX_VALUE))
+                .addContainerGap(28, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -619,6 +619,7 @@ public class main extends javax.swing.JFrame {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
     
     //Funcion principal
@@ -658,7 +659,7 @@ public class main extends javax.swing.JFrame {
                 break; // Si ya se ingresó la cantidad de procesos, salir del bucle
             }
         } while (true);
-    contadorGlobal();  //Iniciaa el contador global 
+    contadorGlobal();  //Inicia el contador global 
    //Divide los procesos en sus respectivos estados "Ejecucion","Cola Listos","Nuevos"
             //Procesos maximos en la cola de listos = 5
              int count = 0; //Contador de procesos en el ciclo
@@ -718,9 +719,7 @@ public class main extends javax.swing.JFrame {
            //Tabla de procesos terminados
            tablaTerminados.setColumnIdentifiers(new Object[]{"ID", "Tiempo finalización","Tiempo retorno"});
            tabla_terminados.setModel(tablaTerminados);
-           for (int i = 0; i < 3; i++) {
-           tablaTerminados.addRow(new Object[]{5+i, 3+i,4+i});}
-        
+           
         //Metodos eliminar y modificar <--
          // Elimina la fila del índice en la tabla 
            tablaBloqueados.removeRow(1);
@@ -849,9 +848,11 @@ public class main extends javax.swing.JFrame {
                     terminados.add(ejecucion); // Cambia el estado del proceso a "terminados"
                     System.out.println(timer);
                     recorrerProcesos();
+                    actualizarGrafica();
                     ejecutado = true; // Marcar como ejecutado
                     timer = 0;
                     
+
                 } else if (ejecucion.getTime() != timer) { 
                     ejecutado = false; // Reiniciar el indicador si el tiempo ha cambiado
                 }
@@ -873,7 +874,8 @@ public class main extends javax.swing.JFrame {
      if(cola_listos.size() != 0){ //Si hay procesos en cola 
          ejecucion = cola_listos.remove();
      }else{ //Si ya no hay procesos en cola
-         pausar(); tiemposThread.interrupt(); tiempos_procesos.clear(); actualizarGrafica();
+         pausar(); tiemposThread.interrupt(); tiempos_procesos.clear(); 
+         
      } //Interrumpir bloqueados}
      //System.out.println(ejecucion.getProcessId());
      //Añade un proceso de "nuevos" a la "cola listos"
@@ -899,6 +901,7 @@ public class main extends javax.swing.JFrame {
      //actualizarGrafica();
        
    }
+      
     //-------------------------------------------------------------------------
     private void bloquearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bloquearActionPerformed
         /*Datos prueba en distintos eventos (eliminar al implementar) <--
