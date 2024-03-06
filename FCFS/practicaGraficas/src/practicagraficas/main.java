@@ -39,10 +39,11 @@ public class main extends javax.swing.JFrame {
     private DefaultTableModel tablaTerminados = new DefaultTableModel(); //Tabla terminados
     
     public main() {
-        initComponents();
         b = new Burbuja(conjunto);
         g = new Grafico();
-        contador_global = -1;  
+        contador_global = -1; 
+        initComponents();
+         
     }
 
     @SuppressWarnings("unchecked")
@@ -706,12 +707,12 @@ public class main extends javax.swing.JFrame {
            tablaBloqueados.setColumnIdentifiers(new Object[]{"ID", "Transcurrido"});
            // Modelo de la tabla y filas 
            tabla_bloqueados.setModel(tablaBloqueados);
-           for (int i = 0; i < 4; i++) {
-           tablaCola.addRow(new Object[]{5+i, 3+i});} 
-            procesosBloqueados(13,0,0); //ID,fila,TT_actual = 0 (tiempo transcurrido bloqueado)
-            procesosBloqueados(20,1,0);
-            procesosBloqueados(35,2,0);
-            procesosBloqueados(40,3,0);
+//           for (int i = 0; i < 4; i++) {
+//           tablaCola.addRow(new Object[]{5+i, 3+i});} 
+//            procesosBloqueados(13,0,0); //ID,fila,TT_actual = 0 (tiempo transcurrido bloqueado)
+//            procesosBloqueados(20,1,0);
+//            procesosBloqueados(35,2,0);
+//            procesosBloqueados(40,3,0);
            
            //Tabla de cola de procesos (Ej maxima cantidad de procesos en: bloqueados, ejecución y cola listos = 5) 
            tablaCola.setColumnIdentifiers(new Object[]{"ID", "Tiempo"});
@@ -725,11 +726,11 @@ public class main extends javax.swing.JFrame {
            for (int i = 0; i < 3; i++) {
            tablaTerminados.addRow(new Object[]{5+i, 3+i,4+i});}
         
-        //Metodos eliminar y modificar <--
-         // Elimina la fila del índice en la tabla 
-           tablaBloqueados.removeRow(1);
-           // Modifica un valor en la tabla --> Args (nuevoValor,fila,columna) Ej: (11,0,1) = 11, fila 1, columna 2
-           tablaBloqueados.setValueAt(11, 0, 1); 
+//        //Metodos eliminar y modificar <--
+//         // Elimina la fila del índice en la tabla 
+//           tablaBloqueados.removeRow(1);
+//           // Modifica un valor en la tabla --> Args (nuevoValor,fila,columna) Ej: (11,0,1) = 11, fila 1, columna 2
+//           tablaBloqueados.setValueAt(11, 0, 1); 
         //----------------------------------------------------------------------
      //Inicializacion de prueba paneles
           //Panel CPU
@@ -869,6 +870,17 @@ public class main extends javax.swing.JFrame {
                         g.editarColorProceso(i, new Color(139, 69, 19));
                     }
                 }
+                //Mensajes
+                //Panel CPU
+                tiempo_cpu.setText(String.valueOf(ejecucion.getTime()));
+                id_cpu.setText(String.valueOf(ejecucion.getProcessId()));
+                ocupado_cpu.setText(String.valueOf(ejecucion.getCompletionTime()));
+                //Tiempo llegada
+                tiempo_llegada.setText(String.valueOf(ejecucion.getTimeArrival()));
+                //Tiempo respuesta
+                tiempo_respuesta.setText(String.valueOf(ejecucion.getResponseTime()));
+                //Tiempo espera
+                tiempo_espera.setText(String.valueOf(ejecucion.getWaitTime()));
                   //Tablas
                 if(tablaTerminados.getRowCount()>=0){//Evitar fallas por las filas
                     for(int i=tablaTerminados.getRowCount()-1;i>=0;i--)
@@ -876,6 +888,13 @@ public class main extends javax.swing.JFrame {
                 }
                 for(Process processTer: terminados){//Insertara toda la lista de terminados a la tabla
                     tablaTerminados.addRow(new Object[]{processTer.getProcessId(),processTer.getCompletionTime(),processTer.getReturnTime()});   
+                }  
+                if(tablaCola.getRowCount()>=0){//Evitar fallas por las filas
+                    for(int i=tablaCola.getRowCount()-1;i>=0;i--)
+                        tablaCola.removeRow(i);//Vaciara todas las filas de tabla para eliminar datos repetidos
+                }
+                for(Process processColaListo: cola_listos){//Insertara toda la lista de terminados a la tabla
+                    tablaCola.addRow(new Object[]{processColaListo.getProcessId(),processColaListo.getCompletionTime(),processColaListo.getReturnTime()});   
                 }  
          
 }
