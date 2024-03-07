@@ -6,7 +6,6 @@ import java.lang.Thread;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.*;
-import java.util.Random;
 import java.util.Queue;
 import java.util.LinkedList;
 
@@ -17,6 +16,7 @@ public class main extends javax.swing.JFrame {
     //--------------------------------------------------
     List<Process> procesos = new ArrayList<>(); // Lista procesos nuevos 
     List<Process> terminados = new ArrayList<>(); // Lista procesos terminados
+    List<Process> list_bloqueados = new ArrayList<>(); // Lista procesos bloqueados
     Process ejecucion; //Proceso en ejecucion 
     List<Integer> tiempos_procesos = new ArrayList<>(); // Lista para almacenar tiempos de procesos
     Queue<Process> cola_listos = new LinkedList<>(); //Cola de listos
@@ -24,14 +24,17 @@ public class main extends javax.swing.JFrame {
     //proceso = new Process(1); //Process recibe como argumento el ID del proceso 
     //Variable, hilos e interrupciones
     private int contador_global; //Global Count
+    private int ID = 1; //Process ID
     private int actual_timer; //Tiempo del proceso actual al continuar luego de interrupcion "pausa"
+    private int wait_timer = 0; //Guarda la referencia del tiempo de proceso en ejecucion 
     private Thread contadorThread; //Global Count Thread
     private Thread GraficaThread; //Hilo de Grafica 
     private Thread tiemposThread; //Hilo de Tiempos
     private volatile boolean ejecutando = true; //Interrupcion Continuar/Pausar hilo
+    private int color_bloqueado = 0; //Color del "bloqueado" en cola de listos 
     private volatile boolean terminado = false; //Interrupcion Terminado
     private volatile boolean tiempos = true; //Bandera de interrupcion de tiempos 
-    private Thread bloqueadosThread; //Global Count Thread
+    //private Thread bloqueadosThread; //Global Count Thread
     private volatile boolean bloqueados = true; // Bandera para controlar la ejecución del hilo
     private int threadCount = 0; // Contador para generar identificadores únicos de hilo
     private DefaultTableModel tablaBloqueados = new DefaultTableModel(); //Tabla bloqueados 
@@ -39,15 +42,14 @@ public class main extends javax.swing.JFrame {
     private DefaultTableModel tablaTerminados = new DefaultTableModel(); //Tabla terminados
     
     public main() {
+        initComponents();
         b = new Burbuja(conjunto);
         g = new Grafico();
-        contador_global = -1; 
-        initComponents();
-         
+        contador_global = -1;  
     }
 
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -624,11 +626,12 @@ public class main extends javax.swing.JFrame {
 
         pack();
         setLocationRelativeTo(null);
-    }// </editor-fold>//GEN-END:initComponents
+    }// </editor-fold>                        
     
     //Funcion principal
-    private void iniciarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_iniciarActionPerformed
+    private void iniciarActionPerformed(java.awt.event.ActionEvent evt) {                                        
    //Creacion de procesos 
+  if (ejecucion == null) {
     tiempos_procesos.add(0); //Omite el primer tiempo en la grafica
     boolean cantidadIngresada = false; // Bandera para verificar si ya se ingresó la cantidad de procesos
     do {
@@ -640,7 +643,8 @@ public class main extends javax.swing.JFrame {
 
                         // Crear los procesos con IDs distintos y asignar tiempos
                         for (int i = 1; i < cantidad; i++) {
-                            Process proceso = new Process(i);
+                            Process proceso = new Process(ID);
+                            ID++;
                             procesos.add(proceso);
                         }
 
@@ -669,6 +673,7 @@ public class main extends javax.swing.JFrame {
              int count = 0; //Contador de procesos en el ciclo
                  for (Process proceso : procesos) { //Recorre los procesos 
                       if(count <= 4){ //Valida que solo 5 procesos inicien en la cola de listos
+                          proceso.setTimeArrival(0); //Asigna el tiempo de llegada
                           cola_listos.offer(proceso); //Añade a la cola de listos un maximo de 5 procesos 
                        }
                       count++;
@@ -680,6 +685,8 @@ public class main extends javax.swing.JFrame {
  //Estados de procesos---------------------------------
      //Asigna el proceso en estado "Ejecucion" 
      ejecucion = cola_listos.remove(); 
+     int llegada = ejecucion.getTimeArrival();
+     ejecucion.setResponseTime(0-llegada); //Tiempo de respuesta del proceso 
      //System.out.println(ejecucion.getProcessId());
      tiempos_procesos.add(ejecucion.getTime()); //Añade el tiempo del proceso en ejecucion a la grafica 
      //Añade los tiempos de los procesos en "Cola de listos" a la grafica 
@@ -704,15 +711,15 @@ public class main extends javax.swing.JFrame {
         //Inicializacion de prueba tablas
            //Tabla de procesos bloqueados
            // Columnas de la tabla
-           tablaBloqueados.setColumnIdentifiers(new Object[]{"ID", "Transcurrido"});
+           tablaBloqueados.setColumnIdentifiers(new Object[]{"ID", "Tiempo-Proceso"});
            // Modelo de la tabla y filas 
            tabla_bloqueados.setModel(tablaBloqueados);
-//           for (int i = 0; i < 4; i++) {
-//           tablaCola.addRow(new Object[]{5+i, 3+i});} 
-//            procesosBloqueados(13,0,0); //ID,fila,TT_actual = 0 (tiempo transcurrido bloqueado)
-//            procesosBloqueados(20,1,0);
-//            procesosBloqueados(35,2,0);
-//            procesosBloqueados(40,3,0);
+           for (int i = 0; i < 4; i++) {
+           tablaCola.addRow(new Object[]{5+i, 3+i});} 
+            //procesosBloqueados(13,0,7); //ID,fila,TT_actual = 0 (tiempo transcurrido bloqueado)
+            //procesosBloqueados(20,1,7); 
+            //procesosBloqueados(20,1,7); 
+            
            
            //Tabla de cola de procesos (Ej maxima cantidad de procesos en: bloqueados, ejecución y cola listos = 5) 
            tablaCola.setColumnIdentifiers(new Object[]{"ID", "Tiempo"});
@@ -726,11 +733,11 @@ public class main extends javax.swing.JFrame {
            for (int i = 0; i < 3; i++) {
            tablaTerminados.addRow(new Object[]{5+i, 3+i,4+i});}
         
-//        //Metodos eliminar y modificar <--
-//         // Elimina la fila del índice en la tabla 
-//           tablaBloqueados.removeRow(1);
-//           // Modifica un valor en la tabla --> Args (nuevoValor,fila,columna) Ej: (11,0,1) = 11, fila 1, columna 2
-//           tablaBloqueados.setValueAt(11, 0, 1); 
+        //Metodos eliminar y modificar <--
+         // Elimina la fila del índice en la tabla 
+           //tablaBloqueados.removeRow(1);
+           // Modifica un valor en la tabla --> Args (nuevoValor,fila,columna) Ej: (11,0,1) = 11, fila 1, columna 2
+           //tablaBloqueados.setValueAt(11, 0, 1); 
         //----------------------------------------------------------------------
      //Inicializacion de prueba paneles
           //Panel CPU
@@ -744,7 +751,11 @@ public class main extends javax.swing.JFrame {
           //Tiempo espera
           tiempo_espera.setText(String.valueOf(0));
           tiemposProcesos(0);
-    }//GEN-LAST:event_iniciarActionPerformed
+  }else{
+  // Mostrar un JOptionPane informando al usuario que no hay procesos en ejecución
+        JOptionPane.showMessageDialog(this, "El programa ya ha sido iniciado.", "Error", JOptionPane.ERROR_MESSAGE);
+  }
+    }                                       
     //Funciones de interrupciones
     
     //--------------------------------------------------------------
@@ -753,49 +764,43 @@ public class main extends javax.swing.JFrame {
         bloqueados = false;
         tiempos = false;
         contadorThread.interrupt(); // Interrumpir contador
-        bloqueadosThread.interrupt(); //Interrumpir bloqueados
+        //bloqueadosThread.interrupt(); //Interrumpir bloqueados
         tiemposThread.interrupt(); //Interrumpir tiempos de procesos en grafica
    }
-
+   
     private void continuar() { //Interrupcion de Continuar o Ejecutar 
        ejecutando = true; 
        bloqueados = true;
        tiempos = true;
-       //Vuelven a iniciar los procesos bloqueados en su estado actual 
-       int rowCount = tablaBloqueados.getRowCount(); // Obtiene los procesos bloqueados
-        // Iterar sobre cada fila
-        for (int i = 0; i < rowCount; i++) {
-            // Obtener el ID de la fila en la columna 0
-            int id = (int) tablaBloqueados.getValueAt(i, 0);
-            // Obtener el tiempo de la fila en la columna 1
-            int tiempo = (int) tablaBloqueados.getValueAt(i, 1);
-            procesosBloqueados(id,i,tiempo); //ID,fila, TT_Actual (comienza el TT en donde se quedo)
-        }
      contadorGlobal(); //Vuelve a iniciar el contador global 
      tiemposProcesos(actual_timer); //Vuelve a inicar el proceso en ejecucion en el tiempo donde se quedó
     }
     
-    private int obtenerNuevoId() {
-        // Incrementa el último ID utilizado
-        if (procesos.isEmpty()) { // Verifica si la lista de procesos esta vacia.
-            return 1; // Si no hay procesos, comienza con ID 1.
-        } else {
-            Process ultimoProceso = procesos.get(procesos.size() - 1); // Obtiene el ultimo proceso en la lista.
-            return ultimoProceso.getProcessId() + 1; // Incrementa el último ID utilizado.
-        }
-    }
     private void nuevo() { //Interrupcion de nuevo proceso
-       // Simulación: Agregar un nuevo proceso a la lista de procesos nuevos
-        int nuevoId = obtenerNuevoId(); // Obtenemos el ID.
-        Process nuevoProceso = new Process(nuevoId);
-        procesos.add(nuevoProceso);// agrega el nuevo proceso a la lista.
+       // Simulación: Agregar un nuevo proceso a la lista de procesos nuevos o a la cola
+        Process nuevoProceso = new Process(ID);
+        ID++;
+        if(cola_listos.size() < 4){ //Si cabe el proceso en la cola de listos 
+            nuevoProceso.setTimeArrival(contador_global); //Asigna el tiempo de llegada
+            cola_listos.add(nuevoProceso);// agrega el nuevo proceso a la cola
+        }else{ //Sino, se añade a nuevos  
+            procesos.add(nuevoProceso);// agrega el nuevo proceso a la lista de nuevos.
+        }
+        //System.out.println(nuevoProceso.getProcessId());
         tiempos_procesos.add(nuevoProceso.getTime()); //Añade el timepo del proceso a la grafica 
         actualizarGrafica();
     }
      
     private void terminar() { //Interrupcion de terminar proceso
         if (ejecucion.getTime() != 1) { // verifica si hay un proceso en ejecucion.
+            ejecucion.setCompletionTime(contador_global); //Añade el tiempo de finalizacion
+            int finalizacion = ejecucion.getCompletionTime();
+            int llegada = ejecucion.getTimeArrival();
+            ejecucion.setReturnTime(finalizacion-llegada); //Añade el tiempo de retorno 
+            int retorno = ejecucion.getReturnTime();
+            ejecucion.setWaitTime(retorno-wait_timer); //Tiempo de espera 
             terminados.add(ejecucion); // Mueve el proceso en ejecucion a la lista de procesos termminados.
+            tiempo_espera.setText(String.valueOf(ejecucion.getWaitTime()));
             ejecucion.setTime(1); // Limpiar el tiempo del proceso en ejecución.
             terminado = true; //Bandera de terminado
             recorrerProcesos(); // Mueve el siguiente proceso a la cola de ejecución.
@@ -828,33 +833,49 @@ public class main extends javax.swing.JFrame {
         });
         contadorThread.start(); // Iniciar el hilo
     }
-    private void procesosBloqueados(int id,int fila, int TT_actual) { //Funcion/Hilo de procesos bloqueados
-        bloqueadosThread = new Thread(new Runnable() {
+  public void contadorBloqueados() {
+        Thread hilo_bloqueados = new Thread(new Runnable() {
+            private int contador = 0;
             @Override
             public void run() {
-                int TT = 0;
-                if(TT_actual != 0){//Actualiza el TT al actual del proceso bloqueado al ser despausado
-                   TT = TT_actual;
-                }
-                tablaBloqueados.addRow(new Object[]{id, TT}); //Nuevo bloqueado en la tabla
-                while (bloqueados && TT < 8) { // Mientras haya bloqueados y TT < 8
-                    synchronized (this) { //Protege el codigo del hilo al poder haber varios hilos funcionando
-                        TT++;
-                        tablaBloqueados.setValueAt(id, fila, 0); //Actualiza el ID del proceso en la tabla
-                        tablaBloqueados.setValueAt(TT, fila, 1); //Actualiza el TT del proceso en la tabla
-                    }
-                        try {
-                            Thread.sleep(1000); //Actualiza por seg
-                        } catch (InterruptedException ex) {
-                            Thread.currentThread().interrupt();
-                            return; // Salir del hilo si se interrumpe durante la espera
+                //tablaBloqueados.addRow(new Object[]{id, contador});
+                while (true) {
+                    System.out.println(Thread.currentThread().getName() + ": " + contador);
+                    contador++;
+                    //tablaBloqueados.setValueAt(contador, fila, 1); // Actualiza el contador del proceso en la tabla
+                    if (contador == 8) {
+                        //tablaBloqueados.removeRow(0);
+                        color_bloqueado--; // Regresa una barra a su color de "listos
+                        if(g.colorProceso(0,Color.GREEN)){ // Compara si el ejecutado esta bloqueado
+                               g.editarColorProceso(0, Color.red);
+                               tiemposProcesos(0);
                         }
+                        list_bloqueados.remove(0);
+
+                               if(tablaBloqueados.getRowCount()>=0){//Evitar fallas por las filas
+                                  for(int i=tablaBloqueados.getRowCount()-1;i>=0;i--)
+                                      tablaBloqueados.removeRow(i);//Vaciara todas las filas de tabla para eliminar datos repetidos
+                                    }
+                                  //System.out.println("Terminados actuales");
+                                  for(Process bloqueado: list_bloqueados){//Insertara toda la cola de listos a la tabla
+                                        //System.out.println(terminado.getProcessId());
+                                        tablaBloqueados.addRow(new Object[]{bloqueado.getProcessId(),bloqueado.getTime()});  
+                                        //recorrerProcesos();
+                                  }             
+                        break; // Reinicia el contador cuando llega a 8
                     }
-                                                 //Antes de terminar, regresar a la tabla cola listos <--
-                tablaBloqueados.removeRow(fila); //Termina el proceso bloqueado
+                    try {
+                        Thread.sleep(1000); // Espera 1 segundo antes de continuar
+                    } catch (InterruptedException ex) {
+                        Thread.currentThread().interrupt();
+                        return; // Salir del hilo si se interrumpe durante la espera
+                    }
                 }
+            }
         });
-        bloqueadosThread.start(); // Iniciar el hilo
+
+        // Iniciar el hilo
+        hilo_bloqueados.start();
     }
    private void actualizarGrafica() { //Funcion/Hilo de datos en Grafica
    
@@ -869,33 +890,38 @@ public class main extends javax.swing.JFrame {
                     } else if (i >= 5) { // Color de procesos nuevos
                         g.editarColorProceso(i, new Color(139, 69, 19));
                     }
+                    if(color_bloqueado > 0){
+                       g.editarColorProceso(4, Color.green);
+                       if(color_bloqueado >= 2){
+                            g.editarColorProceso(3, Color.green);}
+                       if(color_bloqueado >= 3){
+                            g.editarColorProceso(2, Color.green);}
+                       if(color_bloqueado >= 4){
+                            g.editarColorProceso(1, Color.green);}
+                       if(color_bloqueado >= 5){
+                            g.editarColorProceso(0, Color.green);}
+                    }
                 }
-                //Mensajes
-                //Panel CPU
-                tiempo_cpu.setText(String.valueOf(ejecucion.getTime()));
-                id_cpu.setText(String.valueOf(ejecucion.getProcessId()));
-                ocupado_cpu.setText(String.valueOf(ejecucion.getCompletionTime()));
-                //Tiempo llegada
-                tiempo_llegada.setText(String.valueOf(ejecucion.getTimeArrival()));
-                //Tiempo respuesta
-                tiempo_respuesta.setText(String.valueOf(ejecucion.getResponseTime()));
-                //Tiempo espera
-                tiempo_espera.setText(String.valueOf(ejecucion.getWaitTime()));
-                  //Tablas
+                  //Tabla de "Terminados" en la interfaz
                 if(tablaTerminados.getRowCount()>=0){//Evitar fallas por las filas
                     for(int i=tablaTerminados.getRowCount()-1;i>=0;i--)
                         tablaTerminados.removeRow(i);//Vaciara todas las filas de tabla para eliminar datos repetidos
                 }
-                for(Process processTer: terminados){//Insertara toda la lista de terminados a la tabla
-                    tablaTerminados.addRow(new Object[]{processTer.getProcessId(),processTer.getCompletionTime(),processTer.getReturnTime()});   
+                //System.out.println("Terminados actuales");
+                for(Process terminado: terminados){//Insertara toda la lista de terminados a la tabla
+                      //System.out.println(terminado.getProcessId());
+                      tablaTerminados.addRow(new Object[]{terminado.getProcessId(),terminado.getCompletionTime(),terminado.getReturnTime()});   
                 }  
-                if(tablaCola.getRowCount()>=0){//Evitar fallas por las filas
+                 if(tablaCola.getRowCount()>=0){//Evitar fallas por las filas
                     for(int i=tablaCola.getRowCount()-1;i>=0;i--)
                         tablaCola.removeRow(i);//Vaciara todas las filas de tabla para eliminar datos repetidos
                 }
-                for(Process processColaListo: cola_listos){//Insertara toda la lista de terminados a la tabla
-                    tablaCola.addRow(new Object[]{processColaListo.getProcessId(),processColaListo.getCompletionTime(),processColaListo.getReturnTime()});   
-                }  
+                //System.out.println("Terminados actuales");
+                for(Process cola: cola_listos){//Insertara toda la cola de listos a la tabla
+                      //System.out.println(terminado.getProcessId());
+                      tablaCola.addRow(new Object[]{cola.getProcessId(),cola.getTime()});  
+                      //recorrerProcesos();
+                } 
          
 }
   private void tiemposProcesos(int time) { //Funcion/Hilo Tiempos/procesos
@@ -906,7 +932,17 @@ public class main extends javax.swing.JFrame {
             while (tiempos) { // Bucle que se ejecuta mientras tiempos sea verdadero
                 // Verificar si ejecucion.getTime() es igual a contador_global
                 if (ejecucion.getTime() == timer && !ejecutado) {
+                    wait_timer = timer; //Guarda la referencia del tiempo del proceso en ejecucion atual
+                    ejecucion.setCompletionTime(contador_global); //Añade el tiempo de finalizacion
+                    int finalizacion = ejecucion.getCompletionTime();
+                    int llegada = ejecucion.getTimeArrival();
+                    ejecucion.setReturnTime(finalizacion-llegada); //Añade el tiempo de retorno 
+                    int retorno = ejecucion.getReturnTime();
+                    ejecucion.setWaitTime(retorno-timer);
+                    tiempo_espera.setText(String.valueOf(ejecucion.getWaitTime()));
                     terminados.add(ejecucion); // Cambia el estado del proceso a "terminados"
+                    System.out.println("Terminado noral");
+                    System.out.println(ejecucion.getProcessId());
                     ejecucion.setTime(1); // Limpiar el tiempo del proceso en ejecución.
                     //System.out.println(timer);
                     recorrerProcesos();
@@ -928,6 +964,17 @@ public class main extends javax.swing.JFrame {
                     timer=0;
                     terminado = false;
                 }
+                if(ejecucion.getTime() != 1){
+                    if(g.colorProceso(0,Color.GREEN)){ // Compara si el ejecutado esta bloqueado
+                        tiemposThread.interrupt();
+                    }
+                }
+                //Actualizar el Panel del proceso en ejecucion
+                tiempo_cpu.setText(String.valueOf(ejecucion.getTime()));
+                id_cpu.setText(String.valueOf(ejecucion.getProcessId()));
+                ocupado_cpu.setText(String.valueOf(timer));
+                tiempo_llegada.setText(String.valueOf(ejecucion.getTimeArrival()));
+                tiempo_respuesta.setText(String.valueOf(ejecucion.getResponseTime()));
                 tiempos_procesos.set(1, timer); // Actualizar el tiempo del proceso en ejecución
                 actualizarGrafica(); // Actualiza la barra de "ejecucion" de acuerdo a su tiempo 
                 timer++;
@@ -976,11 +1023,21 @@ public class main extends javax.swing.JFrame {
                     tiempos_procesos.add(proceso.getTime());
                 }
 
-                }} 
+                }
+     } 
       //Interrumpir bloqueados}
      //System.out.println(ejecucion.getProcessId());
       //Añade un proceso de "nuevos" a la "cola listos"
-       if(procesos.size() != 0){cola_listos.offer(procesos.remove(0));}
+      int llegada = ejecucion.getTimeArrival();
+      ejecucion.setResponseTime(contador_global-llegada); //Tiempo de respuesta del proceso 
+      //System.out.println("LLegada menos contador ");
+      //System.out.println(ejecucion.getResponseTime());
+      //System.out.println(contador_global);
+       if(procesos.size() != 0){
+           Process proceso = procesos.remove(0);
+           proceso.setTimeArrival(contador_global); //Asigna el tiempo de llegada
+           cola_listos.offer(proceso);
+       }
        //System.out.println(ejecucion.getProcessId());
       tiempos_procesos.clear(); //Limpia los tiempos de los procesos anteriores 
       tiempos_procesos.add(0); //Omite el primer tiempo en la grafica
@@ -1003,28 +1060,81 @@ public class main extends javax.swing.JFrame {
        
    }
     //-------------------------------------------------------------------------
-    private void bloquearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bloquearActionPerformed
+    private void bloquearActionPerformed(java.awt.event.ActionEvent evt) {                                         
+       
+         if (ejecucion != null) {
+             if(ejecucion.getTime() != 1){
+                cola_listos.offer(ejecucion);
+                list_bloqueados.add(ejecucion);//Lista de bloquedos
+                if(tablaBloqueados.getRowCount()>=0){//Evitar fallas por las filas
+                                          for(int i=tablaBloqueados.getRowCount()-1;i>=0;i--)
+                                              tablaBloqueados.removeRow(i);//Vaciara todas las filas de tabla para eliminar datos repetidos
+                                            }
+                for(Process bloqueado: list_bloqueados){//Insertara los bloquedos a la tabla
+                              //System.out.println(terminado.getProcessId());
+                              tablaBloqueados.addRow(new Object[]{bloqueado.getProcessId(),bloqueado.getTime()});  
+                              //recorrerProcesos();
+                        } 
+                contadorBloqueados(); //Conteo del proceso bloqueado en grafica 
+                color_bloqueado++;
+                recorrerProcesos();
+                tiemposThread.interrupt(); //Interrumpir tiempos de procesos en gráfica
+                tiemposProcesos(0); //Vuelve a iniciar el proceso en ejecución en el tiempo donde se quedó
+                actualizarGrafica();
+    } else {
+        // Mostrar un JOptionPane informando al usuario que no hay procesos en ejecución
+        JOptionPane.showMessageDialog(this, "No hay procesos en ejecución por bloquear.", "Error", JOptionPane.ERROR_MESSAGE);
+    }
+       //contadorBloqueados(ejecucion.getProcessId(),color_bloqueado,0);
+       //color_bloqueado++;
+         }else{
+         JOptionPane.showMessageDialog(this, "No hay procesos en ejecución por bloquear.", "Error", JOptionPane.ERROR_MESSAGE);
+         }
+    }                                        
 
-        procesosBloqueados(55,0,0);
-    }//GEN-LAST:event_bloquearActionPerformed
+    private void terminarActionPerformed(java.awt.event.ActionEvent evt) {                                         
+        if (ejecucion != null) {
+                terminar();
+        }else{
+        // Mostrar un JOptionPane informando al usuario que no hay procesos en ejecución
+        JOptionPane.showMessageDialog(this, "No hay procesos en ejecución por terminar.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }                                        
 
-    private void terminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_terminarActionPerformed
-        terminar();
-    }//GEN-LAST:event_terminarActionPerformed
+    private void stopActionPerformed(java.awt.event.ActionEvent evt) {                                     
+       if (ejecucion != null) {
+            pausar();
+       }else{
+         // Mostrar un JOptionPane informando al usuario que no hay procesos en ejecución
+        JOptionPane.showMessageDialog(this, "No hay procesos en ejecución por detener.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }                                    
 
-    private void stopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopActionPerformed
-        pausar();
-    }//GEN-LAST:event_stopActionPerformed
+    private void ejecutarActionPerformed(java.awt.event.ActionEvent evt) {                                         
+        if (ejecucion != null) {
+             if(!ejecutando){
+                continuar(); 
+             }else{
+             // Mostrar un JOptionPane informando al usuario sobre el error
+                     JOptionPane.showMessageDialog(this, "El proceso se encuentra en ejecución.", "Error", JOptionPane.ERROR_MESSAGE);
+             }
+        }else{
+         // Mostrar un JOptionPane informando al usuario que no hay procesos en ejecución
+        JOptionPane.showMessageDialog(this, "No hay procesos en ejecución por iniciar.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }                                        
 
-    private void ejecutarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ejecutarActionPerformed
-        continuar();      
-    }//GEN-LAST:event_ejecutarActionPerformed
-
-    private void nuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nuevoActionPerformed
-      // Añadir procesos a "NUEVOS"
-      nuevo();
+    private void nuevoActionPerformed(java.awt.event.ActionEvent evt) {                                      
+      
+     // Añadir procesos a "NUEVOS"
+     if (ejecucion != null) {
+     nuevo();
+     }else{
+         // Mostrar un JOptionPane informando al usuario que no hay procesos en ejecución
+        JOptionPane.showMessageDialog(this, "Para poder añadir procesos nuevos, debe iniciar el programa.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
         
-    }//GEN-LAST:event_nuevoActionPerformed
+    }                                     
 
     
     public static void main(String args[]) {
@@ -1058,7 +1168,7 @@ public class main extends javax.swing.JFrame {
         });
     }
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
+    // Variables declaration - do not modify                     
     private javax.swing.JButton bloquear;
     private javax.swing.JLabel contador;
     private javax.swing.JList<String> cpu;
@@ -1113,5 +1223,5 @@ public class main extends javax.swing.JFrame {
     private javax.swing.JLabel tiempo_espera;
     private javax.swing.JLabel tiempo_llegada;
     private javax.swing.JLabel tiempo_respuesta;
-    // End of variables declaration//GEN-END:variables
+    // End of variables declaration                   
 }
