@@ -49,7 +49,7 @@ public class main extends javax.swing.JFrame {
     }
 
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -81,10 +81,6 @@ public class main extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         label_respuesta = new javax.swing.JLabel();
         tiempo_respuesta = new javax.swing.JLabel();
-        panel_cpu4 = new javax.swing.JPanel();
-        jLabel5 = new javax.swing.JLabel();
-        label_espera = new javax.swing.JLabel();
-        tiempo_espera = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
         tabla_bloqueados = new javax.swing.JTable();
         jScrollPane4 = new javax.swing.JScrollPane();
@@ -348,45 +344,6 @@ public class main extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        panel_cpu4.setBackground(new java.awt.Color(255, 255, 255));
-
-        jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 22)); // NOI18N
-        jLabel5.setText("Tiempo de espera");
-
-        label_espera.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        label_espera.setText("Tiempo:");
-
-        tiempo_espera.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        tiempo_espera.setText("0");
-
-        javax.swing.GroupLayout panel_cpu4Layout = new javax.swing.GroupLayout(panel_cpu4);
-        panel_cpu4.setLayout(panel_cpu4Layout);
-        panel_cpu4Layout.setHorizontalGroup(
-            panel_cpu4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panel_cpu4Layout.createSequentialGroup()
-                .addGap(14, 14, 14)
-                .addGroup(panel_cpu4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panel_cpu4Layout.createSequentialGroup()
-                        .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 209, Short.MAX_VALUE)
-                        .addContainerGap())
-                    .addGroup(panel_cpu4Layout.createSequentialGroup()
-                        .addComponent(label_espera)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(tiempo_espera)
-                        .addGap(71, 71, 71))))
-        );
-        panel_cpu4Layout.setVerticalGroup(
-            panel_cpu4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panel_cpu4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel5)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panel_cpu4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(label_espera)
-                    .addComponent(tiempo_espera))
-                .addContainerGap(17, Short.MAX_VALUE))
-        );
-
         tabla_bloqueados.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -549,11 +506,9 @@ public class main extends javax.swing.JFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(panel_cpu1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(panel_cpu2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(panel_cpu4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(panel_cpu2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(label_bloqueados2, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(13, 13, 13))
+                        .addGap(260, 260, 260))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(label_ejecutando)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 107, Short.MAX_VALUE)
@@ -586,7 +541,6 @@ public class main extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(panel_cpu4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(panel_cpu2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(panel_cpu1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(26, 26, 26)
@@ -626,10 +580,10 @@ public class main extends javax.swing.JFrame {
 
         pack();
         setLocationRelativeTo(null);
-    }// </editor-fold>                        
+    }// </editor-fold>//GEN-END:initComponents
     
     //Funcion principal
-    private void iniciarActionPerformed(java.awt.event.ActionEvent evt) {                                        
+    private void iniciarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_iniciarActionPerformed
    //Creacion de procesos 
   if (ejecucion == null) {
     tiempos_procesos.add(0); //Omite el primer tiempo en la grafica
@@ -686,7 +640,7 @@ public class main extends javax.swing.JFrame {
      //Asigna el proceso en estado "Ejecucion" 
      ejecucion = cola_listos.remove(); 
      int llegada = ejecucion.getTimeArrival();
-     ejecucion.setResponseTime(0-llegada); //Tiempo de respuesta del proceso 
+     ejecucion.setResponseTime(0); //Tiempo de respuesta del proceso (contador global - time arrival)
      //System.out.println(ejecucion.getProcessId());
      tiempos_procesos.add(ejecucion.getTime()); //Añade el tiempo del proceso en ejecucion a la grafica 
      //Añade los tiempos de los procesos en "Cola de listos" a la grafica 
@@ -728,7 +682,7 @@ public class main extends javax.swing.JFrame {
            tablaCola.addRow(new Object[]{5+i, 3+i});}
            
            //Tabla de procesos terminados
-           tablaTerminados.setColumnIdentifiers(new Object[]{"ID", "Tiempo finalización","Tiempo retorno"});
+           tablaTerminados.setColumnIdentifiers(new Object[]{"ID", "Final","Retorno","Espera"});
            tabla_terminados.setModel(tablaTerminados);
            for (int i = 0; i < 3; i++) {
            tablaTerminados.addRow(new Object[]{5+i, 3+i,4+i});}
@@ -749,13 +703,13 @@ public class main extends javax.swing.JFrame {
           //Tiempo respuesta
           tiempo_respuesta.setText(String.valueOf(0));
           //Tiempo espera
-          tiempo_espera.setText(String.valueOf(0));
+          //tiempo_espera.setText(String.valueOf(0));
           tiemposProcesos(0);
   }else{
   // Mostrar un JOptionPane informando al usuario que no hay procesos en ejecución
         JOptionPane.showMessageDialog(this, "El programa ya ha sido iniciado.", "Error", JOptionPane.ERROR_MESSAGE);
   }
-    }                                       
+    }//GEN-LAST:event_iniciarActionPerformed
     //Funciones de interrupciones
     
     //--------------------------------------------------------------
@@ -798,9 +752,9 @@ public class main extends javax.swing.JFrame {
             int llegada = ejecucion.getTimeArrival();
             ejecucion.setReturnTime(finalizacion-llegada); //Añade el tiempo de retorno 
             int retorno = ejecucion.getReturnTime();
-            ejecucion.setWaitTime(retorno-wait_timer); //Tiempo de espera 
+            ejecucion.setWaitTime(wait_timer); //Tiempo de espera 
             terminados.add(ejecucion); // Mueve el proceso en ejecucion a la lista de procesos termminados.
-            tiempo_espera.setText(String.valueOf(ejecucion.getWaitTime()));
+            //tiempo_espera.setText(String.valueOf(ejecucion.getWaitTime()));
             ejecucion.setTime(1); // Limpiar el tiempo del proceso en ejecución.
             terminado = true; //Bandera de terminado
             recorrerProcesos(); // Mueve el siguiente proceso a la cola de ejecución.
@@ -816,11 +770,13 @@ public class main extends javax.swing.JFrame {
         contadorThread = new Thread(new Runnable() {
             @Override
             public void run() {
+                
                 while (ejecutando) { // Mientras la bandera de ejecución sea verdadera
                     synchronized (this) { //Protege el codigo del hilo al poder haber varios hilos funcionando
                         // Lógica del contador
                         contador_global++;
                         contador.setText(String.valueOf(contador_global));
+                        ocupado_cpu.setText(String.valueOf(wait_timer+1));
                         try {
                             Thread.sleep(1000); //Actualiza por seg
                         } catch (InterruptedException ex) {
@@ -910,7 +866,7 @@ public class main extends javax.swing.JFrame {
                 //System.out.println("Terminados actuales");
                 for(Process terminado: terminados){//Insertara toda la lista de terminados a la tabla
                       //System.out.println(terminado.getProcessId());
-                      tablaTerminados.addRow(new Object[]{terminado.getProcessId(),terminado.getCompletionTime(),terminado.getReturnTime()});   
+                      tablaTerminados.addRow(new Object[]{terminado.getProcessId(),terminado.getCompletionTime(),terminado.getReturnTime(),terminado.getWaitTime()});   
                 }  
                  if(tablaCola.getRowCount()>=0){//Evitar fallas por las filas
                     for(int i=tablaCola.getRowCount()-1;i>=0;i--)
@@ -932,14 +888,13 @@ public class main extends javax.swing.JFrame {
             while (tiempos) { // Bucle que se ejecuta mientras tiempos sea verdadero
                 // Verificar si ejecucion.getTime() es igual a contador_global
                 if (ejecucion.getTime() == timer && !ejecutado) {
-                    wait_timer = timer; //Guarda la referencia del tiempo del proceso en ejecucion atual
                     ejecucion.setCompletionTime(contador_global); //Añade el tiempo de finalizacion
                     int finalizacion = ejecucion.getCompletionTime();
                     int llegada = ejecucion.getTimeArrival();
                     ejecucion.setReturnTime(finalizacion-llegada); //Añade el tiempo de retorno 
                     int retorno = ejecucion.getReturnTime();
                     ejecucion.setWaitTime(retorno-timer);
-                    tiempo_espera.setText(String.valueOf(ejecucion.getWaitTime()));
+                    //tiempo_espera.setText(String.valueOf(ejecucion.getWaitTime()));
                     terminados.add(ejecucion); // Cambia el estado del proceso a "terminados"
                     System.out.println("Terminado noral");
                     System.out.println(ejecucion.getProcessId());
@@ -954,6 +909,13 @@ public class main extends javax.swing.JFrame {
                 }
                 if (ejecucion.getTime() == 1) { // Se mantiene a la espera de procesos nuevos si no hay
                     timer = 0;
+                    tiempo_cpu.setText(String.valueOf(0));
+                    id_cpu.setText(String.valueOf(0));
+                    ocupado_cpu.setText(String.valueOf(0));
+                    //Tiempo llegada
+                    tiempo_llegada.setText(String.valueOf(0));
+                    //Tiempo respuesta
+                    tiempo_respuesta.setText(String.valueOf(0));
                     //System.out.println(ejecucion.getTime());
                     recorrerProcesos();
                     continue;
@@ -972,12 +934,12 @@ public class main extends javax.swing.JFrame {
                 //Actualizar el Panel del proceso en ejecucion
                 tiempo_cpu.setText(String.valueOf(ejecucion.getTime()));
                 id_cpu.setText(String.valueOf(ejecucion.getProcessId()));
-                ocupado_cpu.setText(String.valueOf(timer));
                 tiempo_llegada.setText(String.valueOf(ejecucion.getTimeArrival()));
                 tiempo_respuesta.setText(String.valueOf(ejecucion.getResponseTime()));
                 tiempos_procesos.set(1, timer); // Actualizar el tiempo del proceso en ejecución
                 actualizarGrafica(); // Actualiza la barra de "ejecucion" de acuerdo a su tiempo 
                 timer++;
+                wait_timer = timer; //Guarda la referencia del tiempo del proceso en ejecucion atual
                 actual_timer = timer; //Guarda la referencia del tiempo en proceso en ejecucion
             }
         } catch (InterruptedException e) {
@@ -1029,6 +991,7 @@ public class main extends javax.swing.JFrame {
      //System.out.println(ejecucion.getProcessId());
       //Añade un proceso de "nuevos" a la "cola listos"
       int llegada = ejecucion.getTimeArrival();
+      
       ejecucion.setResponseTime(contador_global-llegada); //Tiempo de respuesta del proceso 
       //System.out.println("LLegada menos contador ");
       //System.out.println(ejecucion.getResponseTime());
@@ -1060,7 +1023,7 @@ public class main extends javax.swing.JFrame {
        
    }
     //-------------------------------------------------------------------------
-    private void bloquearActionPerformed(java.awt.event.ActionEvent evt) {                                         
+    private void bloquearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bloquearActionPerformed
        
          if (ejecucion != null) {
              if(ejecucion.getTime() != 1){
@@ -1090,27 +1053,27 @@ public class main extends javax.swing.JFrame {
          }else{
          JOptionPane.showMessageDialog(this, "No hay procesos en ejecución por bloquear.", "Error", JOptionPane.ERROR_MESSAGE);
          }
-    }                                        
+    }//GEN-LAST:event_bloquearActionPerformed
 
-    private void terminarActionPerformed(java.awt.event.ActionEvent evt) {                                         
+    private void terminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_terminarActionPerformed
         if (ejecucion != null) {
                 terminar();
         }else{
         // Mostrar un JOptionPane informando al usuario que no hay procesos en ejecución
         JOptionPane.showMessageDialog(this, "No hay procesos en ejecución por terminar.", "Error", JOptionPane.ERROR_MESSAGE);
         }
-    }                                        
+    }//GEN-LAST:event_terminarActionPerformed
 
-    private void stopActionPerformed(java.awt.event.ActionEvent evt) {                                     
+    private void stopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopActionPerformed
        if (ejecucion != null) {
             pausar();
        }else{
          // Mostrar un JOptionPane informando al usuario que no hay procesos en ejecución
         JOptionPane.showMessageDialog(this, "No hay procesos en ejecución por detener.", "Error", JOptionPane.ERROR_MESSAGE);
         }
-    }                                    
+    }//GEN-LAST:event_stopActionPerformed
 
-    private void ejecutarActionPerformed(java.awt.event.ActionEvent evt) {                                         
+    private void ejecutarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ejecutarActionPerformed
         if (ejecucion != null) {
              if(!ejecutando){
                 continuar(); 
@@ -1122,9 +1085,9 @@ public class main extends javax.swing.JFrame {
          // Mostrar un JOptionPane informando al usuario que no hay procesos en ejecución
         JOptionPane.showMessageDialog(this, "No hay procesos en ejecución por iniciar.", "Error", JOptionPane.ERROR_MESSAGE);
         }
-    }                                        
+    }//GEN-LAST:event_ejecutarActionPerformed
 
-    private void nuevoActionPerformed(java.awt.event.ActionEvent evt) {                                      
+    private void nuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nuevoActionPerformed
       
      // Añadir procesos a "NUEVOS"
      if (ejecucion != null) {
@@ -1134,7 +1097,7 @@ public class main extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(this, "Para poder añadir procesos nuevos, debe iniciar el programa.", "Error", JOptionPane.ERROR_MESSAGE);
         }
         
-    }                                     
+    }//GEN-LAST:event_nuevoActionPerformed
 
     
     public static void main(String args[]) {
@@ -1168,7 +1131,7 @@ public class main extends javax.swing.JFrame {
         });
     }
 
-    // Variables declaration - do not modify                     
+    // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bloquear;
     private javax.swing.JLabel contador;
     private javax.swing.JList<String> cpu;
@@ -1180,7 +1143,6 @@ public class main extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
@@ -1194,7 +1156,6 @@ public class main extends javax.swing.JFrame {
     private javax.swing.JLabel label_cola_listos;
     private javax.swing.JLabel label_contador;
     private javax.swing.JLabel label_ejecutando;
-    private javax.swing.JLabel label_espera;
     private javax.swing.JLabel label_id1;
     private javax.swing.JLabel label_id4;
     private javax.swing.JLabel label_leyenda;
@@ -1212,7 +1173,6 @@ public class main extends javax.swing.JFrame {
     private javax.swing.JPanel panel_cpu1;
     private javax.swing.JPanel panel_cpu2;
     private javax.swing.JPanel panel_cpu3;
-    private javax.swing.JPanel panel_cpu4;
     private javax.swing.JButton stop;
     private javax.swing.JTable tabla_bloqueados;
     private javax.swing.JTable tabla_cola;
@@ -1220,8 +1180,7 @@ public class main extends javax.swing.JFrame {
     private javax.swing.JButton terminar;
     private javax.swing.JLabel tiempo_cpu;
     private javax.swing.JLabel tiempo_cpu3;
-    private javax.swing.JLabel tiempo_espera;
     private javax.swing.JLabel tiempo_llegada;
     private javax.swing.JLabel tiempo_respuesta;
-    // End of variables declaration                   
+    // End of variables declaration//GEN-END:variables
 }

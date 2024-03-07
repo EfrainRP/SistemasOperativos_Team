@@ -57,4 +57,12 @@ public class Grafico {
     public void editarColorProceso(int IDProcess, Color color) {
         chart.getCategoryPlot().getRenderer().setSeriesPaint(IDProcess, color);
     }
+     // Método para comparar el color de una barra con un color dado
+    public boolean colorProceso(int IDProcess, Color color) {
+        // Obtener el color actual de la barra del proceso
+        Color colorActual = (Color) chart.getCategoryPlot().getRenderer().getSeriesPaint(IDProcess);
+
+        // Comparar los colores
+        return colorActual.equals(color);
+    }
 }
