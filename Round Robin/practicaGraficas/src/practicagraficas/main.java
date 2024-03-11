@@ -821,7 +821,7 @@ public class main extends javax.swing.JFrame {
                         color_bloqueado--; // Regresa una barra a su color de "listos
                         if(g.colorProceso(0,Color.GREEN)){ // Compara si el ejecutado esta bloqueado
                                g.editarColorProceso(0, Color.red);
-                               tiemposProcesos(0,0);
+                               tiemposProcesos(0,actual_quantum);
                         }
                         list_bloqueados.remove(0);
 
@@ -926,8 +926,9 @@ public class main extends javax.swing.JFrame {
                     quantum_time = quantum;
                     
                 } else if(quantum_time<=0){
-                    ejecucion.setTime(ejecucion.getTime() - quantum);
-                    cola_listos.add(ejecucion);
+                    ejecucion.setTime(ejecucion.getTime() - quantum_time);
+//                    tiempos_procesos.add(ejecucion.getTime());
+                    cola_listos.offer(ejecucion);
                     ejecucion = cola_listos.remove();
                     quantum_time = quantum;
                     timer=0;
@@ -959,7 +960,7 @@ public class main extends javax.swing.JFrame {
                 if(ejecucion.getTime() != 1){
                     if(g.colorProceso(0,Color.GREEN)){ // Compara si el ejecutado esta bloqueado
                         tiemposThread.interrupt();
-                        quantum_time = quantum;
+                        quantum_time = quant;
                     }
                 }
                 //Actualizar el Panel del proceso en ejecucion
@@ -1059,6 +1060,7 @@ public class main extends javax.swing.JFrame {
        
          if (ejecucion != null) {
              if(ejecucion.getTime() != 1){
+                ejecucion.setTime(ejecucion.getTime() - actual_quantum);
                 cola_listos.offer(ejecucion);
                 list_bloqueados.add(ejecucion);//Lista de bloquedos
                 if(tablaBloqueados.getRowCount()>=0){//Evitar fallas por las filas
@@ -1074,7 +1076,7 @@ public class main extends javax.swing.JFrame {
                 color_bloqueado++;
                 recorrerProcesos();
                 tiemposThread.interrupt(); //Interrumpir tiempos de procesos en gráfica
-                tiemposProcesos(0,0); //Vuelve a iniciar el proceso en ejecución en el tiempo donde se quedó
+                tiemposProcesos(0,actual_quantum); //Vuelve a iniciar el proceso en ejecución en el tiempo donde se quedó
                 actualizarGrafica();
     } else {
         // Mostrar un JOptionPane informando al usuario que no hay procesos en ejecución
