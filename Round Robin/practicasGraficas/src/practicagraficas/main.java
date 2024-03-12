@@ -887,8 +887,6 @@ public class main extends javax.swing.JFrame {
                             procesos.add(list_bloqueados.remove(0));
                             System.out.println("entro");
                             }
-                        
-
                                if(tablaBloqueados.getRowCount()>=0){//Evitar fallas por las filas
                                   for(int i=tablaBloqueados.getRowCount()-1;i>=0;i--)
                                       tablaBloqueados.removeRow(i);//Vaciara todas las filas de tabla para eliminar datos repetidos

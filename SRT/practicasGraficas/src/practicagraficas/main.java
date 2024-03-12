@@ -883,6 +883,7 @@ public class main extends javax.swing.JFrame {
             //tiempo_espera.setText(String.valueOf(ejecucion.getWaitTime()));
             ejecucion.setTime(1); // Limpiar el tiempo del proceso en ejecución.
             terminado = true; //Bandera de terminado
+            Collections.sort(procesos);
             recorrerProcesos(); // Mueve el siguiente proceso a la cola de ejecución.
             //actualizarGrafica();
             
@@ -1005,18 +1006,19 @@ public class main extends javax.swing.JFrame {
                 // Verificar si ejecucion.getTime() es igual a contador_global
                 if(quantum_time < 1){ //Si el Quantum llega a 0
                    cola_listos.offer(ejecucion); //Regresa el proceso a la cola 
-//                   if(cola_listos.size() != 0){
-//                       List<Process> auxList = new ArrayList<>();
-//                    for (int i=0; i<cola_listos.size();i++) {
-//                          //System.out.println(proceso.getProcessId());
-//                          auxList.add(cola_listos.remove());
-//                   }
-//                    Collections.sort(auxList);
-//                   for (Process proceso : auxList) {
-//                          //System.out.println(proceso.getProcessId());
-//                          cola_listos.offer(proceso);
-//                   }
-//                   }
+                   if(cola_listos.size() != 0){
+                       List<Process> auxList = new ArrayList<>();
+                    for (int i=0; i<cola_listos.size();i++) {
+                          //System.out.println(proceso.getProcessId());
+                          auxList.add(cola_listos.remove());
+                   }
+                    Collections.sort(auxList);
+                    Collections.sort(tiempos_procesos);
+                   for (Process proceso : auxList) {
+                          //System.out.println(proceso.getProcessId());
+                          cola_listos.offer(proceso);
+                   }
+                   }
                    
                    ejecucion = cola_listos.remove();
                    quantum_time = Quantum; //Reincia el quantum
@@ -1036,9 +1038,8 @@ public class main extends javax.swing.JFrame {
                     //tiempo_espera.setText(String.valueOf(ejecucion.getWaitTime()));
                     if(ejecucion.getTime()!=1){ //Al estar el "if" al iniciar un proceso nuevo el "ultimo" en la tabla se elimina
                     terminados.add(ejecucion); // Sino, añade el nuevo terminado
+                    Collections.sort(procesos);
                     }
- 
-                        
                     ejecucion.setTime(1);
                     
                     System.out.println("Terminado noral");
@@ -1203,7 +1204,19 @@ public class main extends javax.swing.JFrame {
                     //System.out.println(proceso.getProcessId());
                     tiempos_procesos.add(proceso.getTime());
                 }
-
+                if(cola_listos.size() != 0){
+                       List<Process> auxList = new ArrayList<>();
+                    for (int i=0; i<cola_listos.size();i++) {
+                          //System.out.println(proceso.getProcessId());
+                          auxList.add(cola_listos.remove());
+                   }
+                    Collections.sort(auxList);
+                    Collections.sort(tiempos_procesos);
+                   for (Process proceso : auxList) {
+                          //System.out.println(proceso.getProcessId());
+                          cola_listos.add(proceso);
+                   }
+                   }   
                 }
      } 
       //Interrumpir bloqueados}
