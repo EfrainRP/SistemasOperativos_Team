@@ -1005,8 +1005,22 @@ public class main extends javax.swing.JFrame {
                 // Verificar si ejecucion.getTime() es igual a contador_global
                 if(quantum_time < 1){ //Si el Quantum llega a 0
                    cola_listos.offer(ejecucion); //Regresa el proceso a la cola 
+//                   if(cola_listos.size() != 0){
+//                       List<Process> auxList = new ArrayList<>();
+//                    for (int i=0; i<cola_listos.size();i++) {
+//                          //System.out.println(proceso.getProcessId());
+//                          auxList.add(cola_listos.remove());
+//                   }
+//                    Collections.sort(auxList);
+//                   for (Process proceso : auxList) {
+//                          //System.out.println(proceso.getProcessId());
+//                          cola_listos.offer(proceso);
+//                   }
+//                   }
+                   
                    ejecucion = cola_listos.remove();
                    quantum_time = Quantum; //Reincia el quantum
+
                    actualizarTiempos();
                    //recorrerProcesos(); //Recorre de nuevo los procesos actuales  
                    //ejecutado = true; // Marcar como ejecutado
