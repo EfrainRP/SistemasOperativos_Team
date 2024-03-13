@@ -805,28 +805,7 @@ public class main extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(this, "El programa ya ha sido iniciado.", "Error", JOptionPane.ERROR_MESSAGE);
   }
     }//GEN-LAST:event_iniciarActionPerformed
-    private void selectSORT(List<Process> list){
-        int i=0,j,m;
-        int last= list.size()-1;
-        while(i < last) {
-            m = i;
-            j = i + 1;
 
-            while(j <= last) {
-                if((list.get(j).getTime() - list.get(m).getTime())< 0) {
-                    m = j;
-                    }
-                j++;
-                }
-            if(i!=m) {
-                Process aux=list.get(i);
-                list.set(i,list.get(m));
-                list.set(m, aux);
-                
-                }
-            i++;
-        }
-    }
 //Funciones de interrupciones
     
     //--------------------------------------------------------------
@@ -853,18 +832,30 @@ public class main extends javax.swing.JFrame {
         }
         Process nuevoProceso = new Process(ID);
         ID++;
-        if(cola_listos.size() < 4){ //Si cabe el proceso en la cola de listos 
+        if(nuevoProceso.getTime()< ejecucion.getTime()){
+            JOptionPane.showMessageDialog(this, "Proceso menor que en ejecucion " + nuevoProceso.getProcessId() + " "+nuevoProceso.getTime(), "Aviso", JOptionPane.ERROR_MESSAGE);
+               nuevoProceso.setTimeArrival(contador_global); //Asigna el tiempo de llegada
+               ejecucion.setTime(ejecucion.getTime()-wait_timer);
+              cola_listos.add(ejecucion);
+              tiempos_procesos.add(ejecucion.getTime());
+              ejecucion=nuevoProceso;
+              ordenarCola();
+              actualizarGrafica();
+              
+        }else if(cola_listos.size() < 4){ //Si cabe el proceso en la cola de listos 
             nuevoProceso.setTimeArrival(contador_global); //Asigna el tiempo de llegada
             cola_listos.add(nuevoProceso);// agrega el nuevo proceso a la cola
+            tiempos_procesos.add(nuevoProceso.getTime());
+            ordenarCola();
+            actualizarGrafica();
         }else{ //Sino, se añade a nuevos  
             procesos.add(nuevoProceso);// agrega el nuevo proceso a la lista de nuevos.
             Collections.sort(procesos);
             actualizarTiempos();
         }
-
         //System.out.println(nuevoProceso.getProcessId());
-        tiempos_procesos.add(nuevoProceso.getTime()); //Añade el timepo del proceso a la grafica 
-        Collections.sort(tiempos_procesos);
+//        tiempos_procesos.add(nuevoProceso.getTime()); //Añade el timepo del proceso a la grafica 
+        ordenarCola();
         id_cpu.setText(String.valueOf(ID));
         actualizarGrafica();
     }
@@ -996,17 +987,8 @@ public class main extends javax.swing.JFrame {
                 } 
          
 }
-  
-  private void tiemposProcesos() { //Funcion/Hilo Tiempos/procesos
-    tiemposThread = new Thread(() -> {
-        try {
-            boolean ejecutado = false; // Variable para controlar si ya se ejecutó el bloque de código
-            //int timer = time;
-            while (tiempos) { // Bucle que se ejecuta mientras tiempos sea verdadero
-                // Verificar si ejecucion.getTime() es igual a contador_global
-                if(quantum_time < 1){ //Si el Quantum llega a 0
-                   cola_listos.offer(ejecucion); //Regresa el proceso a la cola 
-                   if(cola_listos.size() != 0){
+   private void ordenarCola(){
+                    if(cola_listos.size() != 0){
                        List<Process> auxList = new ArrayList<>();
                     for (int i=0; i<cola_listos.size();i++) {
                           //System.out.println(proceso.getProcessId());
@@ -1019,6 +1001,20 @@ public class main extends javax.swing.JFrame {
                           cola_listos.offer(proceso);
                    }
                    }
+   }
+  
+  private void tiemposProcesos() { //Funcion/Hilo Tiempos/procesos
+    tiemposThread = new Thread(() -> {
+        try {
+            boolean ejecutado = false; // Variable para controlar si ya se ejecutó el bloque de código
+            //int timer = time;
+            while (tiempos) { // Bucle que se ejecuta mientras tiempos sea verdadero
+                // Verificar si ejecucion.getTime() es igual a contador_global
+                if(quantum_time < 1){ //Si el Quantum llega a 0
+//                   ejecucion.setTime(ejecucion.getTime()-quantum_time);
+                   cola_listos.offer(ejecucion); //Regresa el proceso a la cola 
+//                   tiempos_procesos.set(0,ejecucion.getTime());
+                    ordenarCola();
                    
                    ejecucion = cola_listos.remove();
                    quantum_time = Quantum; //Reincia el quantum
@@ -1167,12 +1163,13 @@ public class main extends javax.swing.JFrame {
             //System.out.println(proceso.getProcessId());
             tiempos_procesos.add(proceso.getTime());
      }}
+     ordenarCola();
   }
     private void recorrerProcesos() { //Recorre la cola de procesos
     //Asigna el proceso en estado "Ejecucion" 
      if(cola_listos.size() != 0){ //Si hay procesos en cola 
          ejecucion = cola_listos.remove();
-         
+         ordenarCola();
      }else{ //Si ya no hay procesos en cola
             tiempos_procesos.clear();
             actualizarGrafica();
@@ -1182,6 +1179,7 @@ public class main extends javax.swing.JFrame {
                             for (Process proceso : procesos) { //Recorre los procesos 
                                  if(count <= 4){ //Valida que solo 5 procesos inicien en la cola de listos
                                      cola_listos.offer(proceso); //Añade a la cola de listos un maximo de 5 procesos 
+                                     ordenarCola();
                                   }
                                  count++;
                             }
@@ -1204,19 +1202,7 @@ public class main extends javax.swing.JFrame {
                     //System.out.println(proceso.getProcessId());
                     tiempos_procesos.add(proceso.getTime());
                 }
-                if(cola_listos.size() != 0){
-                       List<Process> auxList = new ArrayList<>();
-                    for (int i=0; i<cola_listos.size();i++) {
-                          //System.out.println(proceso.getProcessId());
-                          auxList.add(cola_listos.remove());
-                   }
-                    Collections.sort(auxList);
-                    Collections.sort(tiempos_procesos);
-                   for (Process proceso : auxList) {
-                          //System.out.println(proceso.getProcessId());
-                          cola_listos.add(proceso);
-                   }
-                   }   
+                ordenarCola();
                 }
      } 
       //Interrumpir bloqueados}
@@ -1251,6 +1237,7 @@ public class main extends javax.swing.JFrame {
             //System.out.println(proceso.getProcessId());
             tiempos_procesos.add(proceso.getTime());
      }}
+     ordenarCola();
      //actualizarGrafica();
        
    }
