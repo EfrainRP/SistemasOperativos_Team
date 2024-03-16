@@ -833,7 +833,7 @@ public class main extends javax.swing.JFrame {
         Process nuevoProceso = new Process(ID);
         ID++;
         if(nuevoProceso.getTime()< ejecucion.getTime()){
-            JOptionPane.showMessageDialog(this, "Proceso menor que en ejecucion " + nuevoProceso.getProcessId() + " "+nuevoProceso.getTime(), "Aviso", JOptionPane.ERROR_MESSAGE);
+//            JOptionPane.showMessageDialog(this, "Proceso menor que en ejecucion " + nuevoProceso.getProcessId() + " "+nuevoProceso.getTime(), "Aviso", JOptionPane.ERROR_MESSAGE);
                nuevoProceso.setTimeArrival(contador_global); //Asigna el tiempo de llegada
                ejecucion.setTime(ejecucion.getTime()-wait_timer);
               cola_listos.add(ejecucion);
@@ -1011,14 +1011,14 @@ public class main extends javax.swing.JFrame {
             while (tiempos) { // Bucle que se ejecuta mientras tiempos sea verdadero
                 // Verificar si ejecucion.getTime() es igual a contador_global
                 if(quantum_time < 1){ //Si el Quantum llega a 0
-//                   ejecucion.setTime(ejecucion.getTime()-quantum_time);
+                   ejecucion.setTime(ejecucion.getTime()-ejecucion.getTimeRun());
                    cola_listos.offer(ejecucion); //Regresa el proceso a la cola 
 //                   tiempos_procesos.set(0,ejecucion.getTime());
                     ordenarCola();
                    
                    ejecucion = cola_listos.remove();
                    quantum_time = Quantum; //Reincia el quantum
-
+                    
                    actualizarTiempos();
                    //recorrerProcesos(); //Recorre de nuevo los procesos actuales  
                    //ejecutado = true; // Marcar como ejecutado
