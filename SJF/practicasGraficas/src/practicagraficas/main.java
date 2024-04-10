@@ -712,9 +712,9 @@ public class main extends javax.swing.JFrame {
         Collections.sort(procesos); //Ordena los tiempos de los procesos nuevos
         //System.out.println(nuevoProceso.getProcessId());
         tiempos_procesos.add(nuevoProceso.getTime()); //Añade el timepo del proceso a la grafica 
-        id_cpu.setText(String.valueOf(ID));
+//        id_cpu.setText(String.valueOf(ID));
         actualizarTiempos();
-        actualizarGrafica();
+//        actualizarGrafica();
     }
      
    //---------------------------------------------------------------
