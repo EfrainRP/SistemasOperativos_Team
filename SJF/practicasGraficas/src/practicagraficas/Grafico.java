@@ -23,7 +23,7 @@ public class Grafico {
 
         // Se crea un nuevo gráfico de barras
         chart = ChartFactory.createBarChart(
-                "Planificador STR",
+                "Planificador SJF",
                 "ID Procesos",
                 "Tiempo",
                 dataset
